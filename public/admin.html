@@ -167,25 +167,15 @@
             break;
 
           case 'modify-Bike':
-            document.querySelector('.content').innerHTML = `
-                                  <h2>Modify Bike</h2>
-                                  <form>
-                                    <input type="text" name="id" placeholder="Bike Vin" required>
-                                    <input type="text" name="name" placeholder="Bike Name" required>
-                                    <input type="text" name="type" placeholder="Bike Type" required>
-                                    <input type="number" name="cost" placeholder="Bike rental Cost per hour" required>
-
-                                    <button type="submit">Update</button>
-                                  </form>
-                                `;
+            handleModifyBikeClick(option);
             break;
 
           case 'view-Bike':
-            handleViewUserClick(option);
+            handleViewBikeClick(option);
             break;
 
           case 'viewAll-Bikes':
-            handleViewAllUserClick(option);
+            handleViewAllBikeClick(option);
             break;
 
           //USER
@@ -544,6 +534,60 @@
         });
       }
 
+      async function handleModifyBikeClick() {
+        document.querySelector('.content').innerHTML = `
+        <h2>Modify Bike</h2>
+                                  <form>
+                                    <input type="text" id="id" placeholder="Bike Vin" required>
+                                    <input type="text" id="name" placeholder="Bike Name" required>                             
+                                    <input type="number" id="cost" placeholder="Bike rental Cost per hour" required>
+                                    <input type="boolean" id="isElectric" placeholder="Bike isElectric" required>
+                                    <input type="text" id="location" placeholder="Bike location" required>
+                                    <button type="submit">Update</button>
+                                  </form>
+              <div id="bikeData"></div>
+            `;
+
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const id = document.getElementById('id').value;
+          const name = document.getElementById('name').value;
+          const cost = document.getElementById('cost').value;
+          const isElectric = document.getElementById('isElectric').value;
+          const location = document.getElementById('location').value;
+
+          try {
+            const response = await axios.put(`/api/bikes/${id}`, {
+              name,
+              cost,
+              isElectric,
+              location,
+            });
+
+            if (response.status === 200) {
+              alert('Bike data updated successfully');
+
+              const bikeData = response.data.updatedBikeItem;
+              bikeDataContainer.innerHTML = `
+                    <h3>Employee Details:</h3>
+                    <p>Name: ${bikeData.name}</p>
+                    <p>Cost: ${bikeData.cost}</p>
+                    <p>isElectric: ${bikeData.isElectric}</p>
+                    <p>Location: ${bikeData.location}</p>
+                  `;
+            } else {
+              alert('Failed to update employee');
+            }
+          } catch (error) {
+            console.error('Error updating employee:', error);
+          }
+        });
+      }
+
       //Delete Bike
       async function handleDeleteBikeClick(option) {
         document.querySelector('.content').innerHTML = `
@@ -576,6 +620,12 @@
           }
         });
       }
+
+      /////////////////////////////////////////////////////////////
+
+      //USER
+
+      //View User
     </script>
   </head>
   <body>

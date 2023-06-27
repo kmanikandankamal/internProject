@@ -46,32 +46,6 @@ const getEmployeesByDepartment = async (req, res) => {
   }
 };
 
-// const addEmployee = async (req, res) => {
-//   try {
-//     const { name, age, designation, department } = req.body;
-//     const employee = new Employee({ name, age, designation, department });
-
-//     // Check if the employee already exists
-//     const existingEmployee = await Employee.findOne({ name, age });
-//     if (existingEmployee) {
-//       // Set the header before sending the response
-//       // res.setHeader('Content-Type', 'application/json');
-//       return res.status(409).json({
-//         message: 'Employee already exists',
-//         employee: existingEmployee,
-//       });
-//     }
-
-//     await employee.save();
-//     // Set the header before sending the response
-//     res.setHeader('Content-Type', 'application/json');
-//     res.status(201).json({ message: 'Employee added successfully', employee });
-//   } catch (error) {
-//     console.error('Error adding employee:', error);
-//     res.status(500).json({ message: 'Failed to add employee' });
-//   }
-// };
-
 const addEmployee = async (req, res) => {
   try {
     let { name } = req.body;
@@ -85,8 +59,6 @@ const addEmployee = async (req, res) => {
     // Check if the employee already exists
     const existingEmployee = await Employee.findOne({ name, age });
     if (existingEmployee) {
-      // Set the header before sending the response
-      // res.setHeader('Content-Type', 'application/json');
       return res.status(409).json({
         message: 'Employee already exists',
         employee: existingEmployee,

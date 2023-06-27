@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Dashboard</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .top-bar {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        height: 20vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .top-bar h1 {
+        margin: 0;
+        font-size: 36px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .sidebar {
+        background-color: #f1f1f1;
+        height: 100vh;
+        width: 220px;
+        padding: 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .sidebar li {
+        margin-bottom: 10px;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .sidebar a:hover {
+        background-color: #ccc;
+      }
+
+      .sidebar .active {
+        background-color: #ccc;
+        font-weight: bold;
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      .content {
+        margin-left: 240px;
+        padding: 20px;
+      }
+
+      .content h2 {
+        font-size: 24px;
+        margin-top: 0;
+      }
+
+      .content form input {
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      .content form button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      .content form button:hover {
+        background-color: #444;
+      }
+
+      .sidebar .dropdown-menu {
+        display: none;
+      }
+
+      .sidebar .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .checkbox-container input[type='checkbox'] {
+        margin-right: 5px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      //Funtion to handle options
+      function handleOptionClick(option) {
+        switch (option) {
+          //EMPLOYEE
+          case 'add':
+            handleAddEmployeeClick(option);
+            break;
+
+          case 'delete':
+            handleDeleteEmployeeClick(option);
+            break;
+
+          case 'modify':
+            handleModifyEmployeeClick(option);
+            break;
+
+          case 'view':
+            handleViewEmployeeClick(option);
+            break;
+
+          case 'viewAll':
+            handleViewAllEmployeeClick(option);
+            break;
+
+          //BIKE
+          case 'add-Bike':
+            handleAddBikeClick(option);
+            break;
+
+          case 'delete-Bike':
+            handleDeleteBikeClick(option);
+            break;
+
+          case 'modify-Bike':
+            document.querySelector('.content').innerHTML = `
+                                  <h2>Modify Bike</h2>
+                                  <form>
+                                    <input type="text" name="id" placeholder="Bike Vin" required>
+                                    <input type="text" name="name" placeholder="Bike Name" required>
+                                    <input type="text" name="type" placeholder="Bike Type" required>
+                                    <input type="number" name="cost" placeholder="Bike rental Cost per hour" required>
+
+                                    <button type="submit">Update</button>
+                                  </form>
+                                `;
+            break;
+
+          case 'view-Bike':
+            handleViewUserClick(option);
+            break;
+
+          case 'viewAll-Bikes':
+            handleViewAllUserClick(option);
+            break;
+
+          //USER
+          case 'add-User':
+            handleAddUserClick(option);
+            break;
+
+          case 'delete-User':
+            handleDeleteUserClick(option);
+            break;
+
+          case 'modify-User':
+            handleModifyUserClick(option);
+            break;
+
+          case 'view-User':
+            handleViewUserClick(option);
+            break;
+
+          case 'viewAll-User':
+            handleViewAllUserClick(option);
+            break;
+
+          default:
+            break;
+        }
+      }
+      //Functions for EMPLOYEES
+
+      //Fitler  Employee by Id
+      function handleViewEmployeeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                            <h2>Employee Details</h2>
+                            <form>
+                              <input type="text" name="id" placeholder="Employee ID" required>
+                              <button type="submit">View</button>
+                            </form>
+                            <div id ="employeeData"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const employeeDataContainer = document.getElementById('employeeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const employeeId = form.elements.id.value;
+          if (employeeId) {
+            try {
+              const response = await axios.get(`/api/employees/${employeeId}`);
+              const employeeData = response.data;
+              // console.log('Employee Data:', employeeData);
+              employeeDataContainer.innerHTML = `
+                                  <h3>Employee Details:</h3>
+                                  <p>Name:${employeeData.name}</p>
+                                  <p>Age:${employeeData.age}</p>
+                                  <p>Designation:${employeeData.designation}</p>
+                                  <p>Department:${employeeData.department}</p>
+                                  `;
+              // Process the retrieved employee data as needed
+            } catch (error) {
+              console.error('Error fetching employee:', error);
+            }
+          }
+        });
+      }
+
+      //Get all employee details
+      async function handleViewAllEmployeeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                              <div id ="employeeData"></div>
+                          `;
+        const employeeDataContainer = document.getElementById('employeeData');
+        try {
+          const response = await axios.get(`/api/employees/`);
+          const employeeData = response.data;
+          employeeDataContainer.innerHTML = `
+                            ${employeeData
+                              .map(
+                                (employee) => `
+                            <h3> ${employee.name} Details:</h3>
+                            <p>Name:${employee.name}</p>
+                                  <p>Age:${employee.age}</p>
+                                  <p>Designation:${employee.designation}</p>
+                                  <p>Department:${employee.department}</p>
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+        } catch (error) {
+          console.error('Error fetching employee:', error);
+        }
+      }
+
+      //Add Employee details
+      async function handleAddEmployeeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                  <h2>Add Employee</h2>
+                  <form>
+                    <input type="text" id="name" placeholder="Employee Name" required>
+                    <input type="number" id="age" placeholder="Employee Age" required>
+                    <input type="text" id="designation" placeholder="Employee Designation" required>
+                    <input type="text" id="department" placeholder="Employee Department" required>
+                    <button type="submit">Submit</button>
+                  </form>
+                  <div id="employeeData"></div>
+                `;
+
+        const form = document.querySelector('.content form');
+        const employeeDataContainer = document.getElementById('employeeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const name = document.getElementById('name').value;
+          const age = document.getElementById('age').value;
+          const designation = document.getElementById('designation').value;
+          const department = document.getElementById('department').value;
+
+          try {
+            const response = await axios.post('/api/employees/', {
+              name,
+              age,
+              designation,
+              department,
+            });
+
+            if (response.status === 201) {
+              alert('Employee added successfully');
+              form.reset();
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 409) {
+              const existingEmployee = error.response.data;
+              const message = existingEmployee.message;
+              if (message === 'Employee already exists') {
+                const { name, age } = existingEmployee.employee;
+                alert(`Employee already exists.\nName: ${name}\nAge: ${age}`);
+              } else {
+                console.log('Something went wrong');
+              }
+            } else {
+              console.error('Error adding employee:', error);
+            }
+          }
+        });
+      }
+
+      //Update Employee Details
+      async function handleModifyEmployeeClick() {
+        document.querySelector('.content').innerHTML = `
+              <h2>Modify Employee</h2>
+              <form>
+                <input type="text" id="id" placeholder="Employee ID" required>
+                <input type="text" id="name" placeholder="Employee Name" required>
+                <input type="number" id="age" placeholder="Employee Age" required>
+                <input type="text" id="designation" placeholder="Employee Designation" required>
+                <input type="text" id="department" placeholder="Employee Department" required>
+                <button type="submit">Update</button>
+              </form>
+              <div id="employeeData"></div>
+            `;
+
+        const form = document.querySelector('.content form');
+        const employeeDataContainer = document.getElementById('employeeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const id = document.getElementById('id').value;
+          const name = document.getElementById('name').value;
+          const age = document.getElementById('age').value;
+          const designation = document.getElementById('designation').value;
+          const department = document.getElementById('department').value;
+
+          try {
+            const response = await axios.put(`/api/employees/${id}`, {
+              name,
+              age,
+              designation,
+              department,
+            });
+
+            if (response.status === 200) {
+              alert('Employee updated successfully');
+
+              const employeeData = response.data.updatedEmployee;
+              employeeDataContainer.innerHTML = `
+                    <h3>Employee Details:</h3>
+                    <p>Name: ${employeeData.name}</p>
+                    <p>Age: ${employeeData.age}</p>
+                    <p>Designation: ${employeeData.designation}</p>
+                    <p>Department: ${employeeData.department}</p>
+                  `;
+            } else {
+              alert('Failed to update employee');
+            }
+          } catch (error) {
+            console.error('Error updating employee:', error);
+          }
+        });
+      }
+
+      //Delete employee
+      async function handleDeleteEmployeeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                            <h2>Employee Details</h2>
+                            <form>
+                              <input type="text" name="id" placeholder="Employee ID" required>
+                              <button type="submit">Delete</button>
+                            </form>
+                            <div id ="employeeDataDelete"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const employeeDataContainer =
+          document.getElementById('employeeDataDelete');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const employeeId = form.elements.id.value;
+          if (employeeId) {
+            try {
+              const response = await axios.delete(
+                `/api/employees/${employeeId}`
+              );
+              const employeeData = response.data;
+
+              alert('Employee data deleted successfully');
+
+              form.reset();
+            } catch (error) {
+              console.error('Error deleting employee:', error);
+              alert('Employee data removal unsuccessfull');
+            }
+          }
+        });
+      }
+      ///////////////////////////////////////////////////////////////////////////////////
+      //Function for the bikes
+
+      //Filter Bike by VIN(Id)
+      async function handleViewBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                                  <h2>Bike Details</h2>
+                                  <form>
+                                    <input type="text" name="id" placeholder="Bike Vin" required>
+                                    <button type="submit">View</button>
+                                  </form>
+                            <div id ="bikeData"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const bikeId = form.elements.id.value;
+          if (bikeId) {
+            try {
+              const response = await axios.get(`/api/bikes/${bikeId}`);
+              const bikeData = response.data;
+
+              bikeDataContainer.innerHTML = `
+                                  <h3>Employee Details:</h3>
+                                  <p>Name:${bikeData.name}</p>
+                                  <p>Cost:${bikeData.cost}</p>
+                                  <p>IsElectric:${bikeData.isElectric}</p>
+                                  <p>Location:${bikeData.location}</p>
+                                  
+                                  `;
+            } catch (error) {
+              console.error('Error fetching bike:', error);
+            }
+          }
+        });
+      }
+
+      //Get all Bike details
+      async function handleViewAllBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                              <div id ="bikeData"></div>
+                          `;
+        const bikeDataContainer = document.getElementById('bikeData');
+        try {
+          const response = await axios.get(`/api/bikes/`);
+          const bikeData = response.data;
+          bikeDataContainer.innerHTML = `
+                            ${bikeData
+                              .map(
+                                (bike) => `
+                            <h3> ${bike.name} Details:</h3>
+                            <p>Name:${bike.name}</p>
+                                  <p>Cost:${bike.cost}</p>
+                                  <p>isElectric:${bike.isElectric}</p>
+                                  <p>Location:${bike.location}</p>
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+        } catch (error) {
+          console.error('Error fetching bike:', error);
+        }
+      }
+
+      //Add bike
+      async function handleAddBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                  <h2>Add Bike</h2>
+                  <form>
+                    <input type="text" id="name" placeholder="Bike Name" required>
+                    <input type="number" id="cost" placeholder="Bike Cost" required>
+                    <input type="text" id="isElectric" placeholder="Bike isElectric" required>
+                    <input type="text" id="location" placeholder="Bike Location" required>
+                    <button type="submit">Submit</button>
+                  </form>
+                  <div id="bikeData"></div>
+                `;
+
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const name = document.getElementById('name').value;
+          const cost = document.getElementById('cost').value;
+          const isElectric = document.getElementById('isElectric').value;
+          const location = document.getElementById('location').value;
+
+          try {
+            const response = await axios.post('/api/bikes/', {
+              name,
+              cost,
+              isElectric,
+              location,
+            });
+
+            if (response.status === 201) {
+              alert('Bike added successfully');
+              form.reset();
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 409) {
+              const existingBike = error.response.data;
+              const message = existingBike.message;
+
+              if (message === 'Employee already exists') {
+                alert(`Bike already exists.`);
+              } else {
+                console.log('Something went wrong');
+              }
+            } else {
+              console.error('Error adding employee:', error);
+            }
+          }
+        });
+      }
+
+      //Delete Bike
+      async function handleDeleteBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+        <h2>Delete Bike</h2>
+                                  <form>
+                                    <input type="text" name="id" placeholder="Bike Vin" required>
+                                    <button type="submit">Delete</button>
+                                  </form>
+                            <div id ="employeeDataDelete"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeDataDelete');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const bikeId = form.elements.id.value;
+          if (bikeId) {
+            try {
+              const response = await axios.delete(`/api/bikes/${bikeId}`);
+              const bikeData = response.data;
+
+              alert('Bike data deleted successfully');
+
+              form.reset();
+            } catch (error) {
+              console.error('Error deleting bike:', error);
+              alert('Bike data removal unsuccessfull');
+            }
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="top-bar">
+      <h1>Admin Dashboard</h1>
+    </div>
+    <div class="sidebar">
+      <ul>
+        <li><a href="#" class="active">Home</a></li>
+        <li class="dropdown">
+          <a href="#">Employee</a>
+          <div class="dropdown-content">
+            <a
+              href="#"
+              title="Add the new employee"
+              onclick="handleOptionClick('add')"
+              >Add Employee</a
+            >
+            <a href="#" onclick="handleOptionClick('delete')"
+              >Delete Employee</a
+            >
+            <a href="#" onclick="handleOptionClick('modify')"
+              >Modify Employee</a
+            >
+            <a href="#" onclick="handleOptionClick('view')">View Employee</a>
+            <a href="#" onclick="handleOptionClick('viewAll')"
+              >View All Employee</a
+            >
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#">Bike</a>
+          <div class="dropdown-content">
+            <a href="#" onclick="handleOptionClick('add-Bike')">Add Bike</a>
+            <a href="#" onclick="handleOptionClick('delete-Bike')"
+              >Delete Bike</a
+            >
+            <a href="#" onclick="handleOptionClick('modify-Bike')"
+              >Modify Bike details</a
+            >
+            <a href="#" onclick="handleOptionClick('view-Bike')"
+              >View Bike details</a
+            >
+            <a href="#" onclick="handleOptionClick('viewAll-Bikes')"
+              >View All Bikes</a
+            >
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#">User</a>
+          <div class="dropdown-content">
+            <a
+              href="#"
+              title="Add the new user"
+              onclick="handleOptionClick('add-user')"
+              >Add User</a
+            >
+            <a href="#" onclick="handleOptionClick('delete-user')"
+              >Delete User</a
+            >
+            <a href="#" onclick="handleOptionClick('modify-user')"
+              >Modify User</a
+            >
+            <a href="#" onclick="handleOptionClick('view-user')">View User</a>
+            <a href="#" onclick="handleOptionClick('viewAll-user')"
+              >View All User</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <h2>Welcome to the Admin Dashboard!</h2>
+    </div>
+  </body>
+</html>

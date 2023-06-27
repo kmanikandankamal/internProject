@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Customer Registeration</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .top-bar {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        height: 20vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .top-bar h1 {
+        margin: 0;
+        font-size: 36px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .container {
+        /* margin-top: 100px; */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        /* margin: 0 auto; */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .container h2 {
+        text-align: center;
+      }
+
+      .container label,
+      .container input[type='text'],
+      .container input[type='password'],
+      .container button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .container label {
+        font-weight: bold;
+      }
+      .container input[type='text'],
+      .container input[type='password'] {
+        padding: 5px;
+      }
+      .container button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <h1>Welcome to the Registration Dashboard</h1>
+    </div>
+    <div class="container">
+      <form id="registerForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const registerForm = document.getElementById('registerForm');
+
+      registerForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const role = 'customer';
+        try {
+          const response = await axios.post('api/auth/register', {
+            username,
+            password,
+            role,
+          });
+          if (response.status === 201) {
+            alert('User registered successfully');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to register');
+        }
+      });
+    </script>
+  </body>
+</html>

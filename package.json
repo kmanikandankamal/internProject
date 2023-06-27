@@ -1,0 +1,28 @@
+{
+  "name": "employeemenuproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./utils/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "debug": "ndb ./utils/server.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "rules": {
+      "import/no-extraneous-dependencies": "off"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "live-server": "^1.1.0",
+    "liveserver": "^0.1.20",
+    "mongoose": "^7.3.0"
+  }
+}

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const compression = require('compression');
 const connectDB = require('./db');
 const authRoutes = require('../routes/authRoutes');
 const employeeRoutes = require('../routes/employeeRoutes');
@@ -26,6 +27,8 @@ app.use('/api/bikes', bikeRoutes);
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
 });
+
+app.use(compression());
 
 // Start the server
 const port = 5000;

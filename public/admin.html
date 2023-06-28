@@ -444,7 +444,7 @@
                                   <p>Cost:${bikeData.cost}</p>
                                   <p>IsElectric:${bikeData.isElectric}</p>
                                   <p>Location:${bikeData.location}</p>
-                                  
+
                                   `;
             } catch (error) {
               console.error('Error fetching bike:', error);
@@ -539,7 +539,7 @@
         <h2>Modify Bike</h2>
                                   <form>
                                     <input type="text" id="id" placeholder="Bike Vin" required>
-                                    <input type="text" id="name" placeholder="Bike Name" required>                             
+                                    <input type="text" id="name" placeholder="Bike Name" required>
                                     <input type="number" id="cost" placeholder="Bike rental Cost per hour" required>
                                     <input type="boolean" id="isElectric" placeholder="Bike isElectric" required>
                                     <input type="text" id="location" placeholder="Bike location" required>
@@ -650,9 +650,9 @@
               userDataContainer.innerHTML = `
                                   <h3>User Details:</h3>
                                   <p>Username:${userData.username}</p>
-                                  
+
                                   <p>Role:${userData.role}</p>
-                                  
+
                                   `;
               // Process the retrieved employee data as needed
             } catch (error) {
@@ -660,6 +660,33 @@
             }
           }
         });
+      }
+
+      //View All User
+      async function handleViewAllUserClick(option) {
+        document.querySelector('.content').innerHTML = `
+                              <div id ="userData"></div>
+                          `;
+        const userDataContainer = document.getElementById('userData');
+
+        try {
+          const response = await axios.get(`/api/auth/`);
+          const userData = response.data;
+          userDataContainer.innerHTML = `
+                            ${userData
+                              .map(
+                                (user) => `
+                            <h3> ${user.username} Details:</h3>
+                            <p>Name:${user.username}</p>
+                                  <p>Role:${user.role}</p>
+
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
       }
     </script>
   </head>
@@ -725,7 +752,7 @@
               >Modify User</a
             >
             <a href="#" onclick="handleOptionClick('view-User')">View User</a>
-            <a href="#" onclick="handleOptionClick('viewAll-user')"
+            <a href="#" onclick="handleOptionClick('viewAll-User')"
               >View All User</a
             >
           </div>

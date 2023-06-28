@@ -5,7 +5,7 @@ const getAllEmployees = async (req, res) => {
     const employees = await Employee.find();
     res.status(200).json(employees);
   } catch (error) {
-    console.error('Error fetching employees:', error);
+    // console.error('Error fetching employees:', error);
     res.status(500).json({ message: 'Failed to fetch employees' });
   }
 };
@@ -19,7 +19,7 @@ const getEmployeeById = async (req, res) => {
     }
     res.status(200).json(employee);
   } catch (error) {
-    console.error('Error fetching employee:', error);
+    // console.error('Error fetching employee:', error);
     res.status(500).json({ message: 'Failed to fetch employee' });
   }
 };
@@ -30,7 +30,7 @@ const getEmployeesByAgeRange = async (req, res) => {
     const employees = await Employee.find({ age: { $gte: min, $lte: max } });
     res.status(200).json(employees);
   } catch (error) {
-    console.error('Error fetching employees:', error);
+    // console.error('Error fetching employees:', error);
     res.status(500).json({ message: 'Failed to fetch employees' });
   }
 };
@@ -41,7 +41,7 @@ const getEmployeesByDepartment = async (req, res) => {
     const employees = await Employee.find({ department });
     res.status(200).json(employees);
   } catch (error) {
-    console.error('Error fetching employees:', error);
+    // console.error('Error fetching employees:', error);
     res.status(500).json({ message: 'Failed to fetch employees' });
   }
 };
@@ -70,7 +70,7 @@ const addEmployee = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(201).json({ message: 'Employee added successfully', employee });
   } catch (error) {
-    console.error('Error adding employee:', error);
+    // console.error('Error adding employee:', error);
     res.status(500).json({ message: 'Failed to add employee' });
   }
 };
@@ -91,7 +91,7 @@ const updateEmployee = async (req, res) => {
       .status(200)
       .json({ message: 'Employee updated successfully', updatedEmployee });
   } catch (error) {
-    console.error('Error updating employee:', error);
+    // console.error('Error updating employee:', error);
     res.status(500).json({ message: 'Failed to update employee' });
   }
 };
@@ -107,7 +107,7 @@ const deleteEmployee = async (req, res) => {
       .status(200)
       .json({ message: 'Employee deleted successfully', deletedEmployee });
   } catch (error) {
-    console.error('Error deleting employee:', error);
+    // console.error('Error deleting employee:', error);
     res.status(500).json({ message: 'Failed to delete employee' });
   }
 };

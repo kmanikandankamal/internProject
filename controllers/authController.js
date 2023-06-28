@@ -14,7 +14,7 @@ const registerUser = async (req, res) => {
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error('Error registering user:', error);
+    // console.error('Error registering user:', error);
     res.status(500).json({ message: 'Failed to register user' });
   }
 };
@@ -32,8 +32,18 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({ message: 'Login successful', role });
   } catch (error) {
-    console.error('Error logging in:', error);
+    // console.error('Error logging in:', error);
     res.status(500).json({ message: 'Failed to login' });
+  }
+};
+
+const getAllUser = async (req, res) => {
+  try {
+    const userItems = await User.find();
+    res.status(200).json(userItems);
+  } catch (error) {
+    // console.error('Error fetching user details:', error);
+    res.status(500).json({ message: 'Failed to fetch user details' });
   }
 };
 
@@ -46,7 +56,7 @@ const getUserById = async (req, res) => {
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Failed to fetch user' });
   }
 };
@@ -69,7 +79,7 @@ const updateUser = async (req, res) => {
 
     res.status(200).json({ message: 'User updated successfully', user });
   } catch (error) {
-    console.error('Error updating user:', error);
+    // console.error('Error updating user:', error);
     res.status(500).json({ message: 'Failed to update user' });
   }
 };
@@ -87,7 +97,7 @@ const deleteUser = async (req, res) => {
 
     res.status(200).json({ message: 'User deleted successfully', deletedUser });
   } catch (error) {
-    console.error('Error deleting user:', error);
+    // console.error('Error deleting user:', error);
     res.status(500).json({ message: 'Failed to delete user' });
   }
 };
@@ -98,4 +108,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  getAllUser,
 };

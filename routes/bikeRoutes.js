@@ -12,6 +12,8 @@ router.get('/type/:type', bikeController.getBikeItemsByType);
 
 router.get('/cost/:min/:max', bikeController.getBikeItemsByCostRange);
 
+router.get('/location/:location', bikeController.getBikeItemsByLocation);
+
 router.post('/', bikeController.addBikeItem);
 
 router.put('/:id', bikeController.updateBikeItem);

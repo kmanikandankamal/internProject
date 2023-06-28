@@ -2,8 +2,346 @@
 <html>
   <head>
     <title>Customer Dashboard</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .top-bar {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        height: 20vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .top-bar h1 {
+        margin: 0;
+        font-size: 36px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .sidebar {
+        background-color: #f1f1f1;
+        height: 100vh;
+        width: 220px;
+        padding: 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .sidebar li {
+        margin-bottom: 10px;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .sidebar a:hover {
+        background-color: #ccc;
+      }
+
+      .sidebar .active {
+        background-color: #ccc;
+        font-weight: bold;
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      .content {
+        margin-left: 240px;
+        padding: 20px;
+      }
+
+      .content h2 {
+        font-size: 24px;
+        margin-top: 0;
+      }
+
+      .content form input {
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      .content form button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      .content form button:hover {
+        background-color: #444;
+      }
+
+      .sidebar .dropdown-menu {
+        display: none;
+      }
+
+      .sidebar .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .checkbox-container input[type='checkbox'] {
+        margin-right: 5px;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+      //Funtion to handle options
+      function handleOptionClick(option) {
+        switch (option) {
+          //bike
+          case 'view-Bike':
+            handleViewBikeClick(option);
+            break;
+          case 'viewAll-Bike':
+            handleViewAllBikeClick(option);
+            break;
+          case 'filterCost-Bike':
+            handleFilterCostBikeClick(option);
+            break;
+          case 'filterLocation-Bike':
+            handleFilterLocationBikeClick(option);
+            break;
+          default:
+            break;
+        }
+      }
+
+      //Filter Bike by VIN(Id)
+      async function handleViewBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                                  <h2>Bike Details</h2>
+                                  <form>
+                                    <input type="text" name="id" placeholder="Bike Vin" required>
+                                    <button type="submit">View</button>
+                                  </form>
+                            <div id ="bikeData"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const bikeId = form.elements.id.value;
+          if (bikeId) {
+            try {
+              const response = await axios.get(`/api/bikes/${bikeId}`);
+              const bikeData = response.data;
+
+              bikeDataContainer.innerHTML = `
+                                  <h3>Employee Details:</h3>
+                                  <p>Name:${bikeData.name}</p>
+                                  <p>Cost:${bikeData.cost}</p>
+                                  <p>IsElectric:${bikeData.isElectric}</p>
+                                  <p>Location:${bikeData.location}</p>
+                                  
+                                  `;
+            } catch (error) {
+              console.error('Error fetching bike:', error);
+            }
+          }
+        });
+      }
+
+      //Get all Bike details
+      async function handleViewAllBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+                              <div id ="bikeData"></div>
+                          `;
+        const bikeDataContainer = document.getElementById('bikeData');
+        try {
+          const response = await axios.get(`/api/bikes/`);
+          const bikeData = response.data;
+          bikeDataContainer.innerHTML = `
+                            ${bikeData
+                              .map(
+                                (bike) => `
+                            <h3> ${bike.name} Details:</h3>
+                            <p>Name:${bike.name}</p>
+                                  <p>Cost:${bike.cost}</p>
+                                  <p>isElectric:${bike.isElectric}</p>
+                                  <p>Location:${bike.location}</p>
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+        } catch (error) {
+          console.error('Error fetching bike:', error);
+        }
+      }
+
+      //Filter by Cost
+
+      async function handleFilterCostBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+        <h2>Enter the cost range </h2>
+        <form>
+        <input type="number" id="minCost" placeholder="Enter the minimum cost" required>
+        <input type="number" id="maxCost" placeholder="Enter the maximum cost" required>
+                                    <button type="submit">View</button>
+                                    </form>
+                              <div id ="bikeData"></div>
+                          `;
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          try {
+            const minCost = document.getElementById('minCost').value;
+            const maxCost = document.getElementById('maxCost').value;
+
+            const response = await axios.get(
+              `/api/bikes/cost/${minCost}/${maxCost}`
+            );
+
+            const bikeData = response.data;
+
+            bikeDataContainer.innerHTML = `
+                            ${bikeData
+                              .map(
+                                (bike) => `
+                            <h3> ${bike.name} Details:</h3>
+                            <p>Name:${bike.name}</p>
+                                  <p>Cost:${bike.cost}</p>
+                                  <p>isElectric:${bike.isElectric}</p>
+                                  <p>Location:${bike.location}</p>
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+          } catch (error) {
+            console.error('Error fetching bike:', error);
+          }
+        });
+      }
+
+      //filter by location
+
+      async function handleFilterLocationBikeClick(option) {
+        document.querySelector('.content').innerHTML = `
+        <h2>Enter the cost range </h2>
+        <form>
+        <input type="text" id="bikeLocation" placeholder="Enter the bike location" required>
+        
+                                    <button type="submit">View</button>
+                                    </form>
+                              <div id ="bikeData"></div>
+                          `;
+        const form = document.querySelector('.content form');
+        const bikeDataContainer = document.getElementById('bikeData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          try {
+            const bikeLocation = document.getElementById('bikeLocation').value;
+
+            const response = await axios.get(
+              `/api/bikes/location/${bikeLocation}`
+            );
+
+            const bikeData = response.data;
+
+            bikeDataContainer.innerHTML = `
+                            ${bikeData
+                              .map(
+                                (bike) => `
+                            <h3> ${bike.name} Details:</h3>
+                            <p>Name:${bike.name}</p>
+                                  <p>Cost:${bike.cost}</p>
+                                  <p>isElectric:${bike.isElectric}</p>
+                                  <p>Location:${bike.location}</p>
+                    <hr>
+                                  `
+                              )
+                              .join('')}`;
+          } catch (error) {
+            console.error('Error fetching bike:', error);
+          }
+        });
+      }
+    </script>
   </head>
   <body>
-    <h1>Welcome to the Customer Dashboard</h1>
+    <div class="top-bar">
+      <h1>Customer Dashboard</h1>
+    </div>
+    <div class="sidebar">
+      <ul>
+        <li class="dropdown">
+          <a href="#">Bike</a>
+          <div class="dropdown-content">
+            <a href="#" onclick="handleOptionClick('viewAll-Bike')"
+              >View All Bikes</a
+            >
+            <a href="#" onclick="handleOptionClick('view-Bike')"
+              >View Bike details</a
+            >
+
+            <a href="#" onclick="handleOptionClick('filterCost-Bike')"
+              >Filter by Bike Cost</a
+            >
+
+            <a href="#" onclick="handleOptionClick('filterLocation-Bike')"
+              >Filter by Bike Location</a
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <h2>Welcome to the Customer Dashboard!</h2>
+    </div>
   </body>
 </html>

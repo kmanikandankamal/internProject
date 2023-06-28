@@ -40,7 +40,20 @@ const getBikeItemsByType = async (req, res) => {
 const getBikeItemsByCostRange = async (req, res) => {
   try {
     const { min, max } = req.params;
+
     const bikeItems = await Bike.find({ cost: { $gte: min, $lte: max } });
+    res.status(200).json(bikeItems);
+  } catch (error) {
+    console.error('Error fetching bike details:', error);
+    res.status(500).json({ message: 'Failed to fetch bike details' });
+  }
+};
+
+const getBikeItemsByLocation = async (req, res) => {
+  try {
+    const { location } = req.params;
+
+    const bikeItems = await Bike.find({ location });
     res.status(200).json(bikeItems);
   } catch (error) {
     console.error('Error fetching bike details:', error);
@@ -56,7 +69,7 @@ const addBikeItem = async (req, res) => {
     const existingBike = await Bike.findOne({ name, cost });
     if (existingBike) {
       return res.status(409).json({
-        message: 'Employee already exists',
+        message: 'Bike already exists',
         employee: existingBike,
       });
     }
@@ -116,4 +129,5 @@ module.exports = {
   updateBikeItem,
   deleteBikeItem,
   getBikeById,
+  getBikeItemsByLocation,
 };

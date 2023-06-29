@@ -94,6 +94,8 @@
         <input type="text" id="username" name="username" required />
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required />
+        <label for="passwordConfirm">Password Confirm:</label>
+        <input type="password" id="passwordConfirm" name="password" required />
         <button type="submit">Register</button>
       </form>
     </div>
@@ -110,11 +112,14 @@
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const passwordConfirm =
+          document.getElementById('passwordConfirm').value;
         const role = 'customer';
         try {
           const response = await axios.post('api/auth/register', {
             username,
             password,
+            passwordConfirm,
             role,
           });
           if (response.status === 201) {

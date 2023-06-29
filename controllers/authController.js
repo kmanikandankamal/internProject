@@ -2,14 +2,14 @@ const User = require('../models/User');
 
 const registerUser = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, passwordConfirm, role } = req.body;
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists' });
     }
 
-    const user = new User({ username, password, role });
+    const user = new User({ username, password, passwordConfirm, role });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully' });
@@ -67,17 +67,17 @@ const updateUser = async (req, res) => {
     const { username, password } = req.body;
 
     // Find the user by ID
-    const user = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       id,
       { username, password },
       { new: true }
     );
 
-    if (!user) {
+    if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'User updated successfully', user });
+    res.status(200).json({ message: 'User updated successfully', updatedUser });
   } catch (error) {
     // console.error('Error updating user:', error);
     res.status(500).json({ message: 'Failed to update user' });

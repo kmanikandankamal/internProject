@@ -270,6 +270,7 @@
                               .map(
                                 (employee) => `
                             <h3> ${employee.name} Details:</h3>
+                            <p>Id:${employee._id}</p>
                             <p>Name:${employee.name}</p>
                                   <p>Age:${employee.age}</p>
                                   <p>Designation:${employee.designation}</p>
@@ -481,6 +482,7 @@
                               .map(
                                 (bike) => `
                             <h3> ${bike.name} Details:</h3>
+                            <p>Bike VIN:${bike._id}</p>
                             <p>Name:${bike.name}</p>
                                   <p>Cost:${bike.cost}</p>
                                   <p>isElectric:${bike.isElectric}</p>
@@ -690,7 +692,9 @@
                             ${userData
                               .map(
                                 (user) => `
+                          
                             <h3> ${user.username} Details:</h3>
+                            <p>Id:${user._id}</p>
                             <p>Name:${user.username}</p>
                                   <p>Role:${user.role}</p>
 
@@ -704,6 +708,151 @@
       }
       function redirectLogin() {
         window.location.href = 'login.html';
+      }
+
+      //add User
+      async function handleAddUserClick(option) {
+        document.querySelector('.content').innerHTML = `
+                  <h2>Add User</h2>
+                  <form>
+                    <input type="text" id="username" placeholder="User Name" required>
+                    
+                    <input type="password" id="password" placeholder="password" required>
+                    <input type="password" id="passwordConfirm" placeholder="Confirm password" required>
+                    <input type="text" id="role" placeholder="role" required>
+                    <button type="submit">Submit</button>
+                  </form>
+                  <div id="userData"></div>
+                `;
+
+        const form = document.querySelector('.content form');
+        const userDataContainer = document.getElementById('userData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const passwordConfirm =
+            document.getElementById('passwordConfirm').value;
+          const role = document.getElementById('role').value;
+
+          try {
+            const response = await axios.post('/api/auth/register', {
+              username,
+              password,
+              passwordConfirm,
+              role,
+            });
+
+            if (response.status === 201) {
+              alert('User added successfully');
+              form.reset();
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 409) {
+              const existingUser = error.response.data;
+              const message = existingUser.message;
+
+              if (message === 'User already exists') {
+                alert(`User already exists.`);
+              } else {
+                console.log('Something went wrong');
+              }
+            } else {
+              console.error('Error adding user:', error);
+            }
+          }
+        });
+      }
+
+      //delete user
+      async function handleDeleteUserClick(option) {
+        document.querySelector('.content').innerHTML = `
+        <h2>Delete User</h2>
+                                  <form>
+                                    <input type="text" name="id" placeholder="User Id" required>
+                                    <button type="submit">Delete</button>
+                                  </form>
+                            <div id ="userDataDelete"></div>
+                          `;
+
+        const form = document.querySelector('.content form');
+        const userDataContainer = document.getElementById('userDataDelete');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const userId = form.elements.id.value;
+          if (userId) {
+            try {
+              const response = await axios.delete(`/api/auth/${userId}`);
+              const userData = response.data;
+
+              alert('user data deleted successfully');
+
+              form.reset();
+            } catch (error) {
+              console.error('Error deleting user:', error);
+              alert('User data removal unsuccessfull');
+            }
+          }
+        });
+      }
+
+      //modify user
+      async function handleModifyUserClick() {
+        document.querySelector('.content').innerHTML = `
+              <h2>Modify User</h2>
+              <form>
+                <input type="text" id="id" placeholder="User ID" required>
+                <input type="text" id="username" placeholder="User Name" required>
+                <input type="password" id="password" placeholder="User password" required>
+                <input type="password" id="passwordConfirm" placeholder="Confirm password" required>
+                <input type="text" id="role" placeholder="User Role" required>
+                
+                <button type="submit">Update</button>
+              </form>
+              <div id="userData"></div>
+            `;
+
+        const form = document.querySelector('.content form');
+        const userDataContainer = document.getElementById('userData');
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const id = document.getElementById('id').value;
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const passwordConfirm =
+            document.getElementById('passwordConfirm').value;
+          const role = document.getElementById('role').value;
+
+          try {
+            const response = await axios.put(`/api/auth/${id}`, {
+              username,
+              password,
+              passwordConfirm,
+              role,
+            });
+
+            if (response.status === 200) {
+              alert('User updated successfully');
+
+              const userData = response.data.updatedUser;
+              userDataContainer.innerHTML = `
+                    <h3>Employee Details:</h3>
+                    <p>Username: ${userData.username}</p>
+                    <p>Role: ${userData.role}</p>
+                    
+                  `;
+            } else {
+              alert('Failed to update user');
+            }
+          } catch (error) {
+            console.error('Error updating user:', error);
+          }
+        });
       }
     </script>
   </head>
@@ -762,13 +911,13 @@
             <a
               href="#"
               title="Add the new user"
-              onclick="handleOptionClick('add-user')"
+              onclick="handleOptionClick('add-User')"
               >Add User</a
             >
-            <a href="#" onclick="handleOptionClick('delete-user')"
+            <a href="#" onclick="handleOptionClick('delete-User')"
               >Delete User</a
             >
-            <a href="#" onclick="handleOptionClick('modify-user')"
+            <a href="#" onclick="handleOptionClick('modify-User')"
               >Modify User</a
             >
             <a href="#" onclick="handleOptionClick('view-User')">View User</a>

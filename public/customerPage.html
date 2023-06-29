@@ -145,6 +145,14 @@
       .redirectLogin a:hover {
         color: #ccc;
       }
+
+      .availability-marker {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -199,6 +207,12 @@
                                   <p>Cost:${bikeData.cost}</p>
                                   <p>IsElectric:${bikeData.isElectric}</p>
                                   <p>Location:${bikeData.location}</p>
+                                  <div class="availability-marker" style="background-color: ${
+                                    bikeData.available ? 'green' : 'red'
+                                  };"></div>
+                                  <button onclick="redirectToPayments('${
+                                    bikeData.name
+                                  }', ${bikeData.cost})">Select</button>
                                   
                                   `;
             } catch (error) {
@@ -226,6 +240,12 @@
                                   <p>Cost:${bike.cost}</p>
                                   <p>isElectric:${bike.isElectric}</p>
                                   <p>Location:${bike.location}</p>
+                                  <div class="availability-marker" style="background-color: ${
+                                    bikeData.available ? 'green' : 'red'
+                                  };"></div>
+                                  <button onclick="redirectToPayments('${
+                                    bikeData.name
+                                  }', ${bikeData.cost})">Select</button>
                     <hr>
                                   `
                               )
@@ -270,6 +290,12 @@
                                   <p>Cost:${bike.cost}</p>
                                   <p>isElectric:${bike.isElectric}</p>
                                   <p>Location:${bike.location}</p>
+                                  <div class="availability-marker" style="background-color: ${
+                                    bikeData.available ? 'green' : 'red'
+                                  };"></div>
+                                  <button onclick="redirectToPayments('${
+                                    bikeData.name
+                                  }', ${bikeData.cost})">Select</button>
                     <hr>
                                   `
                               )
@@ -316,6 +342,12 @@
                                   <p>Cost:${bike.cost}</p>
                                   <p>isElectric:${bike.isElectric}</p>
                                   <p>Location:${bike.location}</p>
+                                  <div class="availability-marker" style="background-color: ${
+                                    bikeData.available ? 'green' : 'red'
+                                  };"></div>
+                                  <button onclick="redirectToPayments('${
+                                    bikeData.name
+                                  }', ${bikeData.cost})">Select</button>
                     <hr>
                                   `
                               )

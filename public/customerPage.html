@@ -131,6 +131,20 @@
       .checkbox-container input[type='checkbox'] {
         margin-right: 5px;
       }
+      .redirectLogin {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .redirectLogin a {
+        color: #fff;
+        font-weight: bold;
+      }
+
+      .redirectLogin a:hover {
+        color: #ccc;
+      }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -311,12 +325,18 @@
           }
         });
       }
-      
+
+      function redirectLogin() {
+        window.location.href = 'login.html';
+      }
     </script>
   </head>
   <body>
     <div class="top-bar">
       <h1>Customer Dashboard</h1>
+      <div class="redirectLogin">
+        <a href="url" onclick="redirectLogin()"> Back to Login </a>
+      </div>
     </div>
     <div class="sidebar">
       <ul>

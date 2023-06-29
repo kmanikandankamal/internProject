@@ -45,6 +45,17 @@
         border: none;
         cursor: pointer;
       }
+      .forgot-password {
+        text-align: center;
+        margin-top: 10px;
+      }
+      .forgot-password a {
+        color: #0c88ee;
+        text-decoration: none;
+      }
+      .forgot-password a:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <h1>Welcome to Mani's Vehicle Rentals</h1>
@@ -56,11 +67,15 @@
         <input type="text" id="username" name="username" required />
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required />
+        <input type="checkbox" onclick="passwordVisibility()" />Show Password
         <button type="submit">Login</button>
       </form>
       <form id="registerForm">
         <button type="submit">Register</button>
       </form>
+      <div class="forgot-password">
+        <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -105,6 +120,15 @@
         event.preventDefault();
         window.location.href = 'registerCustomer.html';
       });
+
+      function passwordVisibility() {
+        var x = document.getElementById('password');
+        if (x.type === 'password') {
+          x.type = 'text';
+        } else {
+          x.type = 'password';
+        }
+      }
     </script>
   </body>
 </html>

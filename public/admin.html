@@ -144,6 +144,69 @@
       .redirectLogin a:hover {
         color: #ccc;
       }
+
+      #employeeData {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
+      }
+
+      #employeeData th {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: left;
+      }
+
+      #employeeData td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      #bikeData {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
+      }
+
+      #bikeData th {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: left;
+      }
+
+      #bikeData td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      #userData {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
+      }
+
+      #userData th {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: left;
+      }
+
+      #userData td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      .availability-marker {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -266,19 +329,30 @@
           const response = await axios.get(`/api/employees/`);
           const employeeData = response.data;
           employeeDataContainer.innerHTML = `
+          <table>
+        <tr>
+            <th>Emp Id</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Designation</th>
+            <th>Department</th>
+            
+        </tr>
                             ${employeeData
                               .map(
                                 (employee) => `
-                            <h3> ${employee.name} Details:</h3>
-                            <p>Id:${employee._id}</p>
-                            <p>Name:${employee.name}</p>
-                                  <p>Age:${employee.age}</p>
-                                  <p>Designation:${employee.designation}</p>
-                                  <p>Department:${employee.department}</p>
-                    <hr>
+                                <tr>
+                            
+                            <td>${employee._id}</td>
+                            <td>${employee.name}</td>
+                                  <td>${employee.age}</td>
+                                  <td>${employee.designation}</td>
+                                  <td>${employee.department}</td>
+                                </tr>
                                   `
                               )
-                              .join('')}`;
+                              .join('')}
+                              </table>`;
         } catch (error) {
           console.error('Error fetching employee:', error);
         }
@@ -478,19 +552,36 @@
           const response = await axios.get(`/api/bikes/`);
           const bikeData = response.data;
           bikeDataContainer.innerHTML = `
-                            ${bikeData
-                              .map(
-                                (bike) => `
-                            <h3> ${bike.name} Details:</h3>
-                            <p>Bike VIN:${bike._id}</p>
-                            <p>Name:${bike.name}</p>
-                                  <p>Cost:${bike.cost}</p>
-                                  <p>isElectric:${bike.isElectric}</p>
-                                  <p>Location:${bike.location}</p>
-                    <hr>
-                                  `
-                              )
-                              .join('')}`;
+    <table>
+        <tr>
+            <th>Bike Vin</th>
+            <th>Name</th>
+            <th>Cost</th>
+            <th>Electric</th>
+            <th>Location</th>
+            <th>Availability</th>
+            
+        </tr>
+        ${bikeData
+          .map(
+            (bike) => `
+                <tr>
+                    <td>${bike._id}</td>
+                    <td>${bike.name}</td>
+                    <td>Rs${bike.cost}</td>
+                    <td>${bike.isElectric ? 'Yes' : 'No'}</td>
+                    <td>${bike.location}</td>
+                    <td>
+                        <div class="availability-marker" style="background-color: ${
+                          bike.available ? 'green' : 'red'
+                        };"></div>
+                    </td>
+                    
+                </tr>
+                `
+          )
+          .join('')}
+    </table>`;
         } catch (error) {
           console.error('Error fetching bike:', error);
         }
@@ -689,19 +780,28 @@
           const response = await axios.get(`/api/auth/`);
           const userData = response.data;
           userDataContainer.innerHTML = `
+          <table>
+            <tr>
+            <th>User Id</th>
+            <th>Username</th>
+            
+            <th>Role</th>
+            
+        </tr>
                             ${userData
                               .map(
                                 (user) => `
                           
-                            <h3> ${user.username} Details:</h3>
-                            <p>Id:${user._id}</p>
-                            <p>Name:${user.username}</p>
-                                  <p>Role:${user.role}</p>
+                            <tr>
+                            <td>${user._id}</td>
+                            <td>${user.username}</td>
+                                  <td>${user.role}</td>
 
-                    <hr>
-                                  `
+                    
+                               </tr>   `
                               )
-                              .join('')}`;
+                              .join('')}
+                              </table>`;
         } catch (error) {
           console.error('Error fetching user:', error);
         }

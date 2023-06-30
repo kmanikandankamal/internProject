@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, required: true },
 });
 
+//middleware
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -29,6 +30,6 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
-const User = mongoose.model('Users', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -8,5 +8,5 @@ const BikeSchema = new mongoose.Schema({
   isElectric: { type: Boolean, required: true },
 });
 
-const Bike = mongoose.model('Bikes', BikeSchema);
+const Bike = mongoose.model('Bike', BikeSchema);
 module.exports = Bike;

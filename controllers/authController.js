@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 const registerUser = async (req, res) => {
@@ -12,7 +13,7 @@ const registerUser = async (req, res) => {
     const user = new User({ username, password, passwordConfirm, role });
     await user.save();
 
-    res.status(201).json(user);
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     // console.error('Error registering user:', error);
     res.status(500).json({ message: 'Failed to register user' });
@@ -24,8 +25,13 @@ const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
     // Find the user by username and password
-    const user = await User.findOne({ username, password });
+    const user = await User.findOne({ username });
     if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
     const { role } = user;

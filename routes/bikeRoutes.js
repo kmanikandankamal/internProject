@@ -6,6 +6,12 @@ const router = express.Router();
 
 router.get('/', bikeController.getAllBikeItems);
 
+router.get(
+  '/top-5-cheap',
+  bikeController.aliasTopBikeItems,
+  bikeController.getAllBikeItems
+);
+
 router.get('/:id', bikeController.getBikeById);
 
 router.get('/type/:type', bikeController.getBikeItemsByType);

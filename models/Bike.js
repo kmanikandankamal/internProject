@@ -10,7 +10,7 @@ const bikeSchema = new mongoose.Schema({
   secretBike: { type: Boolean, default: false },
 });
 
-bikeSchema.pre('/^find/', function (next) {
+bikeSchema.pre(/^find/, function (next) {
   this.find({ secretBike: { $ne: true } });
   next();
 });

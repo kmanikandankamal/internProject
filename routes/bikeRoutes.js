@@ -12,6 +12,8 @@ router.get(
   bikeController.getAllBikeItems
 );
 
+router.get('/bike-stats', bikeController.getBikeStats);
+
 router.get('/:id', bikeController.getBikeById);
 
 router.get('/type/:type', bikeController.getBikeItemsByType);

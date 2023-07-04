@@ -1,5 +1,6 @@
 // bikeController.js
 const Bike = require('../models/Bike');
+const APIFeatures = require('../utils/apiFeatures');
 
 const aliasTopBikeItems = (req, res, next) => {
   req.query.limit = '5';
@@ -10,54 +11,13 @@ const aliasTopBikeItems = (req, res, next) => {
 
 const getAllBikeItems = async (req, res) => {
   try {
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    //filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
-
-    // console.log(req.query, queryObj);
-    // const bikeItems = await Bike.find();
-
-    let query = Bike.find(JSON.parse(queryStr));
-
-    // console.log(bikeItems);
-
-    //sort
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    //Field limiting
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    //Pagination
-    const page = req.query.page * 1 || 1;
-
-    const limit = req.query.limit * 1 || 100;
-
-    const skip = (page - 1) * limit;
-
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.page) {
-      const numBikes = await Bike.countDocuments();
-      if (skip >= numBikes) throw new Error('This page does not exist');
-    }
-
     //Execute Query
-    const bikeItems = await query;
+    const features = new APIFeatures(Bike.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const bikeItems = await features.query;
 
     //Send Response
     res.status(200).json(bikeItems);
@@ -122,8 +82,15 @@ const getBikeItemsByLocation = async (req, res) => {
 
 const addBikeItem = async (req, res) => {
   try {
-    const { name, location, cost, isElectric, rating } = req.body;
-    const bikeItem = new Bike({ name, location, cost, isElectric, rating });
+    const { name, location, cost, isElectric, rating, secretBike } = req.body;
+    const bikeItem = new Bike({
+      name,
+      location,
+      cost,
+      isElectric,
+      rating,
+      secretBike,
+    });
 
     const existingBike = await Bike.findOne({ name, cost });
 
@@ -181,6 +148,44 @@ const deleteBikeItem = async (req, res) => {
   }
 };
 
+const getBikeStats = async (req, res) => {
+  try {
+    const stats = await Bike.aggregate([
+      {
+        $match: { rating: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: '$isElectric',
+          numBikes: { $sum: 1 },
+          avgRating: { $avg: '$rating' },
+          avgCost: { $avg: '$cost' },
+          minCost: { $min: '$cost' },
+          maxCost: { $max: '$cost' },
+        },
+      },
+      {
+        $sort: { avgCost: 1 },
+      },
+      // {
+      //   $match: { _id: { $ne: false } },
+      // },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
+
 module.exports = {
   getAllBikeItems,
   getBikeItemsByType,
@@ -191,4 +196,5 @@ module.exports = {
   getBikeById,
   getBikeItemsByLocation,
   aliasTopBikeItems,
+  getBikeStats,
 };

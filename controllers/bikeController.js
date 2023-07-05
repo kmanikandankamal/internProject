@@ -2,6 +2,8 @@
 const Bike = require('../models/Bike');
 const APIFeatures = require('../utils/apiFeatures');
 const GetInfoByID = require('../utils/getInfoById');
+const DeleteInfoByID = require('../utils/deleteInfo');
+const AddEntity = require('../utils/addEntity');
 
 const aliasTopBikeItems = (req, res, next) => {
   req.query.limit = '5';
@@ -34,6 +36,44 @@ const getBikeById = async (req, res) => {
     await getBikeDataById.getById(req, res);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch Bike' });
+  }
+};
+
+const addBikeItem = async (req, res) => {
+  try {
+    const addBikeData = new AddEntity(Bike);
+    await addBikeData.addItem(req, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to add Bike details' });
+  }
+};
+
+const updateBikeItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, location, cost, isElectric, rating } = req.body;
+    const updatedBikeItem = await Bike.findByIdAndUpdate(
+      id,
+      { name, location, cost, isElectric, rating },
+      { new: true }
+    );
+    if (!updatedBikeItem) {
+      return res.status(404).json({ message: 'Bike not found' });
+    }
+    res
+      .status(200)
+      .json({ message: 'Bike details updated successfully', updatedBikeItem });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update bike details' });
+  }
+};
+
+const deleteBikeItem = async (req, res) => {
+  try {
+    const delBikeDataById = new DeleteInfoByID(Bike);
+    await delBikeDataById.deleteInfo(req, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete bike data' });
   }
 };
 
@@ -73,74 +113,6 @@ const getBikeItemsByLocation = async (req, res) => {
   } catch (error) {
     // console.error('Error fetching bike details:', error);
     res.status(500).json({ message: 'Failed to fetch bike details' });
-  }
-};
-
-const addBikeItem = async (req, res) => {
-  try {
-    const { name, location, cost, isElectric, rating, secretBike } = req.body;
-    const bikeItem = new Bike({
-      name,
-      location,
-      cost,
-      isElectric,
-      rating,
-      secretBike,
-    });
-
-    const existingBike = await Bike.findOne({ name, cost });
-
-    if (existingBike) {
-      return res.status(409).json({
-        message: 'Bike already exists',
-        employee: existingBike,
-      });
-    }
-
-    await bikeItem.save();
-    res
-      .status(201)
-      .json({ message: 'Bike details added successfully', bikeItem });
-  } catch (error) {
-    // console.error('Error adding bike details', error);
-    res.status(500).json({ message: 'Failed to add Bike details' });
-  }
-};
-
-const updateBikeItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, location, cost, isElectric, rating } = req.body;
-    const updatedBikeItem = await Bike.findByIdAndUpdate(
-      id,
-      { name, location, cost, isElectric, rating },
-      { new: true }
-    );
-    if (!updatedBikeItem) {
-      return res.status(404).json({ message: 'Bike not found' });
-    }
-    res
-      .status(200)
-      .json({ message: 'Bike details updated successfully', updatedBikeItem });
-  } catch (error) {
-    // console.error('Error updating Bike details:', error);
-    res.status(500).json({ message: 'Failed to update bike details' });
-  }
-};
-
-const deleteBikeItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedBikeItem = await Bike.findByIdAndDelete(id);
-    if (!deletedBikeItem) {
-      return res.status(404).json({ message: 'Bike details not found' });
-    }
-    res
-      .status(200)
-      .json({ message: 'Bike details deleted successfully', deletedBikeItem });
-  } catch (error) {
-    // console.error('Error deleting bike details:', error);
-    res.status(500).json({ message: 'Failed to delete bike details' });
   }
 };
 

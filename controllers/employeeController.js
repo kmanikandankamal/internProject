@@ -1,10 +1,24 @@
 const Employee = require('../models/Employee');
+const APIFeatures = require('../utils/apiFeatures');
 const GetInfoByID = require('../utils/getInfoById');
+const DeleteInfoByID = require('../utils/deleteInfo');
+const AddEntity = require('../utils/addEntity');
 
 const getAllEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find();
-    res.status(200).json(employees);
+    //Execute Query
+    const features = new APIFeatures(Employee.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const employeeDetails = await features.query;
+
+    //Send Response
+    res.status(200).json(employeeDetails);
+
+    // const employees = await Employee.find();
+    // res.status(200).json(employees);
   } catch (error) {
     // console.error('Error fetching employees:', error);
     res.status(500).json({ message: 'Failed to fetch employees' });
@@ -15,15 +29,8 @@ const getEmployeeById = async (req, res) => {
   try {
     const getEmployeeDataById = new GetInfoByID(Employee);
     await getEmployeeDataById.getById(req, res);
-    // const { id } = req.params;
-    // const employee = await Employee.findById(id);
-    // if (!employee) {
-    //   return res.status(404).json({ message: 'Employee not found' });
-    // }
-    // res.status(200).json(employee);
   } catch (error) {
-    // console.error('Error fetching employee:', error);
-    res.status(500).json({ message: 'Failed to fetch employee' });
+    res.status(500).json({ message: 'Failed to fetch Employee' });
   }
 };
 
@@ -51,29 +58,9 @@ const getEmployeesByDepartment = async (req, res) => {
 
 const addEmployee = async (req, res) => {
   try {
-    let { name } = req.body;
-    const { age, designation, department } = req.body;
-
-    // Convert name to lowercase
-    name = name.toLowerCase();
-
-    const employee = new Employee({ name, age, designation, department });
-
-    // Check if the employee already exists
-    const existingEmployee = await Employee.findOne({ name, age });
-    if (existingEmployee) {
-      return res.status(409).json({
-        message: 'Employee already exists',
-        employee: existingEmployee,
-      });
-    }
-
-    await employee.save();
-    // Set the header before sending the response
-    res.setHeader('Content-Type', 'application/json');
-    res.status(201).json({ message: 'Employee added successfully', employee });
+    const addEmployeeData = new AddEntity(Employee);
+    await addEmployeeData.addItem(req, res);
   } catch (error) {
-    // console.error('Error adding employee:', error);
     res.status(500).json({ message: 'Failed to add employee' });
   }
 };
@@ -101,16 +88,9 @@ const updateEmployee = async (req, res) => {
 
 const deleteEmployee = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedEmployee = await Employee.findByIdAndDelete(id);
-    if (!deletedEmployee) {
-      return res.status(404).json({ message: 'Employee not found' });
-    }
-    res
-      .status(200)
-      .json({ message: 'Employee deleted successfully', deletedEmployee });
+    const delEmployeeDataById = new DeleteInfoByID(Employee);
+    await delEmployeeDataById.deleteInfo(req, res);
   } catch (error) {
-    // console.error('Error deleting employee:', error);
     res.status(500).json({ message: 'Failed to delete employee' });
   }
 };

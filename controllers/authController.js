@@ -1,26 +1,27 @@
 const bcrypt = require('bcrypt');
 // const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const GetInfoByID = require('../utils/getInfoById');
+const DeleteInfoByID = require('../utils/deleteInfo');
+const AddEntity = require('../utils/addEntity');
 
 const registerUser = async (req, res) => {
   try {
+    // const addUserData = new AddEntity(User);
+    // await addUserData.addItem(req, res);
     const { username, password, passwordConfirm, role } = req.body;
-
     const existingUser = await User.findOne({ username });
+
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists' });
     }
-
     const user = new User({ username, password, passwordConfirm, role });
     await user.save();
-
     // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     //   expiresIn: process.env.JWT_EXPIRES_IN,
     // });
-
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    // console.error('Error registering user:', error);
     res.status(500).json({ message: 'Failed to register user' });
   }
 };
@@ -60,15 +61,10 @@ const getAllUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.status(200).json(user);
+    const getUserDataById = new GetInfoByID(User);
+    await getUserDataById.getById(req, res);
   } catch (error) {
-    // console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Failed to fetch user' });
+    res.status(500).json({ message: 'Failed to fetch User' });
   }
 };
 
@@ -97,19 +93,10 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Find and delete the user by ID
-    const deletedUser = await User.findByIdAndDelete(id);
-
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({ message: 'User deleted successfully', deletedUser });
+    const delUserDataById = new DeleteInfoByID(User);
+    await delUserDataById.deleteInfo(req, res);
   } catch (error) {
-    // console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Failed to delete user' });
+    res.status(500).json({ message: 'Failed to delete user data' });
   }
 };
 

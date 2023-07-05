@@ -25,7 +25,7 @@ class APIFeatures {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     } else {
-      this.query = this.query.sort('-createdAt');
+      this.query = this.query.sort('-rating');
     }
 
     return this;
@@ -44,6 +44,7 @@ class APIFeatures {
 
   paginate() {
     //Pagination
+
     const page = this.queryString.page * 1 || 1;
 
     const limit = this.queryString.limit * 1 || 100;

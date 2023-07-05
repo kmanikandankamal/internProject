@@ -1,6 +1,7 @@
 // bikeController.js
 const Bike = require('../models/Bike');
 const APIFeatures = require('../utils/apiFeatures');
+const GetInfoByID = require('../utils/getInfoById');
 
 const aliasTopBikeItems = (req, res, next) => {
   req.query.limit = '5';
@@ -29,14 +30,9 @@ const getAllBikeItems = async (req, res) => {
 
 const getBikeById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const bike = await Bike.findById(id);
-    if (!bike) {
-      return res.status(404).json({ message: 'Bike not found' });
-    }
-    res.status(200).json(bike);
+    const getBikeDataById = new GetInfoByID(Bike);
+    await getBikeDataById.getById(req, res);
   } catch (error) {
-    // console.error('Error fetching Bike:', error);
     res.status(500).json({ message: 'Failed to fetch Bike' });
   }
 };

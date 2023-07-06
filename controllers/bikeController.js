@@ -12,6 +12,10 @@ const aliasTopBikeItems = (req, res, next) => {
   next();
 };
 
+// const catchAsync= fn =>{
+// fn(req,res,next)
+// }
+
 const getAllBikeItems = async (req, res) => {
   try {
     //Execute Query

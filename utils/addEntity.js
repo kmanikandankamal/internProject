@@ -1,29 +1,29 @@
 class AddEntity {
-  constructor(model) {
-    this.model = model;
+  constructor(Model) {
+    this.Model = Model;
   }
 
   async addItem(req, res) {
     try {
       const data = req.body;
-      const Item = new this.model(data);
-      const existingItem = await this.model.findOne(data);
-      console.log(data, existingItem);
+      const item = new this.Model(data);
+      const existingItem = await this.Model.findOne(data);
+
       if (existingItem) {
         return res.status(409).json({
-          message: `${this.model.modelName} already exists`,
+          message: `${this.Model.modelName} already exists`,
           item: existingItem,
         });
       }
-      await Item.save();
+      await item.save();
       res.status(201).json({
-        message: `${this.model.modelName} details added successfully`,
-        item: Item,
+        message: `${this.Model.modelName} details added successfully`,
+        item: item,
       });
     } catch (error) {
       res
         .status(500)
-        .json({ message: `Failed to add ${this.model.modelName} details` });
+        .json({ message: `Failed to add ${this.Model.modelName} details` });
     }
   }
 }

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const GetInfoByID = require('../utils/getInfoById');
 const DeleteInfoByID = require('../utils/deleteInfo');
-const AddEntity = require('../utils/addEntity');
+// const AddEntity = require('../utils/addEntity');
 
 const registerUser = async (req, res) => {
   try {

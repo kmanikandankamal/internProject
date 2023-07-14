@@ -276,9 +276,7 @@
                         };"></div>
                     </td>
                     <td>
-                        <button onclick="redirectToPayments('${bike.name}', ${
-              bike.cost
-            })">Select</button>
+                        <button onclick="redirectToPayments()">Select</button>
                     </td>
                 </tr>
                 `
@@ -396,13 +394,17 @@
       function redirectLogin() {
         window.location.href = 'login.html';
       }
+
+      function redirectToPayments() {
+        window.location.href = 'payments.html';
+      }
     </script>
   </head>
   <body>
     <div class="top-bar">
       <h1>Customer Dashboard</h1>
       <div class="redirectLogin">
-        <a href="url" onclick="redirectLogin()"> Back to Login </a>
+        <a href="login.html" onclick="redirectLogin()"> Back to Login </a>
       </div>
     </div>
     <div class="sidebar">

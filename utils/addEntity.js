@@ -16,6 +16,7 @@ class AddEntity {
         });
       }
       await item.save();
+
       res.status(201).json({
         message: `${this.Model.modelName} details added successfully`,
         item: item,

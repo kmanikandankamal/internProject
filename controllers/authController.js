@@ -3,24 +3,23 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const GetInfoByID = require('../utils/getInfoById');
 const DeleteInfoByID = require('../utils/deleteInfo');
-// const AddEntity = require('../utils/addEntity');
+const AddEntity = require('../utils/addEntity');
 
 const registerUser = async (req, res) => {
   try {
-    // const addUserData = new AddEntity(User);
-    // await addUserData.addItem(req, res);
-    const { username, password, passwordConfirm, role } = req.body;
-    const existingUser = await User.findOne({ username });
+    const addUserData = new AddEntity(User);
+    await addUserData.addItem(req, res);
 
-    if (existingUser) {
-      return res.status(409).json({ message: 'User already exists' });
-    }
-    const user = new User({ username, password, passwordConfirm, role });
-    await user.save();
-    // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    //   expiresIn: process.env.JWT_EXPIRES_IN,
-    // });
-    res.status(201).json({ message: 'User registered successfully' });
+    // const { username, password, passwordConfirm, role } = req.body;
+    // const existingUser = await User.findOne({ username });
+
+    // if (existingUser) {
+    //   return res.status(409).json({ message: 'User already exists' });
+    // }
+    // const user = new User({ username, password, passwordConfirm, role });
+    // await user.save();
+
+    // res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to register user' });
   }

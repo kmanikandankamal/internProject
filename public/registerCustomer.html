@@ -100,7 +100,7 @@
       </form>
     </div>
     <div class="redirectLogin">
-      <a href="url" onclick="redirectLogin()"> Back to Login </a>
+      <a href="login.html" onclick="redirectLogin()"> Back to Login </a>
     </div>
     ;
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -126,8 +126,16 @@
             alert('User registered successfully');
           }
         } catch (error) {
-          console.error('Error:', error);
-          alert('Failed to register');
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            alert(error.response.data.message);
+          } else {
+            console.error('Error:', error);
+            alert('Failed to register');
+          }
         }
       });
 

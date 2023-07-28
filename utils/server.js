@@ -21,6 +21,8 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+app.use(compression());
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
@@ -34,8 +36,6 @@ app.get('/', (req, res) => {
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
-
-app.use(compression());
 
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;

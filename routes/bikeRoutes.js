@@ -4,7 +4,7 @@ const bikeController = require('../controllers/bikeController');
 
 const router = express.Router();
 
-router.get('/', bikeController.getAllBikeItems);
+router.get('/', bikeController.getAllBikeItems); //get all
 
 router.get(
   '/top-5-cheap',
@@ -22,10 +22,10 @@ router.get('/cost/:min/:max', bikeController.getBikeItemsByCostRange);
 
 router.get('/location/:location', bikeController.getBikeItemsByLocation);
 
-router.post('/', bikeController.addBikeItem);
+router.post('/', bikeController.addBikeItem); //add
 
-router.put('/:id', bikeController.updateBikeItem);
+router.put('/:id', bikeController.updateBikeItem); //update
 
-router.delete('/:id', bikeController.deleteBikeItem);
+router.delete('/:id', bikeController.deleteBikeItem); //delete
 
 module.exports = router;

@@ -11,7 +11,7 @@ class APIFeatures {
 
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    //filtering
+    //adding $
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
@@ -56,4 +56,5 @@ class APIFeatures {
     return this;
   }
 }
+
 module.exports = APIFeatures;

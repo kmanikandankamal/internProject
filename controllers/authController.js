@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 // const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const GetInfoByID = require('../utils/getInfoById');
+const APIFeatures = require('../utils/apiFeatures');
 const DeleteInfoByID = require('../utils/deleteInfo');
 const AddEntity = require('../utils/addEntity');
 
@@ -50,7 +51,18 @@ const loginUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
-    const userItems = await User.find();
+    // const userItems = await User.find();
+    // res.status(200).json(userItems);
+
+    //Execute Query
+    const features = new APIFeatures(User.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const userItems = await features.query;
+
+    //Send Response
     res.status(200).json(userItems);
   } catch (error) {
     // console.error('Error fetching user details:', error);

@@ -24,6 +24,7 @@ const getAllBikeItems = async (req, res) => {
       .sort()
       .limitFields()
       .paginate();
+
     const bikeItems = await features.query;
 
     //Send Response
